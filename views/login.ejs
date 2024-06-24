@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Login - Weight&Watch</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <!-- Tailwind CSS - add your appropriate CDN or local setup here -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.3/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+  </head>
+
+  <body class="bg-gray-900 text-white">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col items-center justify-center h-screen">
+        <h1 class="text-4xl font-bold mb-8">Login</h1>
+        <form action="/login" method="POST" class="max-w-md w-full">
+          <div class="mb-4">
+            <label for="email" class="block text-gray-400"
+              >Email or Username</label
+            >
+            <input
+              type="text"
+              id="email"
+              name="email"
+              class="bg-gray-800 rounded-lg py-2 px-4 w-full focus:outline-none focus:bg-gray-700 text-white"
+            />
+          </div>
+          <div class="mb-6">
+            <label for="password" class="block text-gray-400">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="bg-gray-800 rounded-lg py-2 px-4 w-full focus:outline-none focus:bg-gray-700 text-white"
+            />
+          </div>
+          <button
+            type="submit"
+            class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg w-full"
+          >
+            Login
+          </button>
+        </form>
+
+        <div class="mt-4 text-gray-400">
+          <p>
+            Not registered yet?
+            <a href="/register" class="underline">Register</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
