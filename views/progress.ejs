@@ -1,80 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard - Weight&Watch</title>
-    <!-- Tailwind CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css"
-      rel="stylesheet"
-    />
-  </head>
-  <body class="bg-white-900 text-black">
-    <div class="container mx-auto px-4">
-      <!-- Logout button -->
-      <a class="logoutButton btn btn-light btn-lg" href="/logout" role="button"
-        >Log Out</a
-      >
-      <br /><br /><br /><br />
 
-      <div class="stats mt-8">
-        <!-- Display user information -->
-        <h2 class="text-2xl font-bold statistics">
-          Hello, <%= user.username %>
-        </h2>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - Weight&Watch</title>
+  <!-- Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet" />
+  <!-- Chart.js -->
 
-        <!-- Progress data -->
+</head>
+
+<body class="bg-white-900 text-black">
+  <div class="container mx-auto px-4">
+    <!-- Logout button -->
+    <a class="logoutButton btn btn-light btn-lg" href="/logout" role="button">Log Out</a>
+    <br /><br /><br /><br />
+
+    <div class="stats mt-8">
+      <h2 class="text-2xl font-bold statistics">
+        Hello, <%= user.username %>
+      </h2>
+      <!-- Graph -->
+      <canvas id="myChart"></canvas>
+
+      <!-- Specific details from the graph -->
+      <div class="details mt-4">
+        <h2 class="text-2xl font-bold statistics">Statistics</h2>
+
+        <!-- Actual weight -->
         <div class="mt-4">
-          <h4 class="text-xl font-bold">Progress Data</h4>
-          <ul>
-            <li>Start Date: <%= progressData.startDate %></li>
-            <li>End Date: <%= progressData.endDate %></li>
-            <li>Total Weight Lost: <%= progressData.totalWeightLost %> kg</li>
-            <li>
-              Average Weight Change: <%=
-              progressData.averageWeightChange.toFixed(1) %> kg per day
-            </li>
-            <!-- Add more progress metrics as needed -->
-          </ul>
+          <h4 class="text-xl font-bold actual">Actual</h4>
+          <p class="text-lg data">
+            <% if (typeof progressData.yValues !=='undefined' && progressData.yValues.length> 0) { %>
+              <%= progressData.yValues[progressData.yValues.length - 1] %> kg
+                <% } else { %>
+                  No data available
+                  <% } %>
+          </p>
         </div>
 
-        <!-- Chart display -->
-        <canvas id="myChart" style="height: 400px; width: 100%"></canvas>
+        <!-- Weight change this week -->
+        <div class="mt-4">
+          <h4 class="text-xl font-bold thisWeek">This Week</h4>
+          <p class="text-lg data">
+            <% if (progressData.yValues.length>= 7) { %>
+              <% let weightChange=(progressData.yValues[progressData.yValues.length - 1] -
+                progressData.yValues[progressData.yValues.length - 7]).toFixed(1); %>
+                <% if (weightChange> 0) { %>
+                  +<%= weightChange %> kg
+                    <% } else { %>
+                      <%= weightChange %> kg
+                        <% } %>
+                          <% } else { %>
+                            <% let totalChange=(progressData.yValues[progressData.yValues.length - 1] -
+                              progressData.yValues[0]).toFixed(1); %>
+                              <% if (totalChange> 0) { %>
+                                +<%= totalChange %> kg
+                                  <% } else { %>
+                                    <%= totalChange %> kg
+                                      <% } %>
+                                        <% } %>
+          </p>
+        </div>
+
+        <!-- Total weight change -->
+        <div class="mt-4">
+          <h4 class="text-xl font-bold total">Total</h4>
+          <p class="text-lg data">
+            <% let totalChange=(progressData.yValues[progressData.yValues.length - 1] -
+              progressData.yValues[0]).toFixed(1); %>
+              <% if (totalChange> 0) { %>
+                +<%= totalChange %> kg
+                  <% } else { %>
+                    <%= totalChange %> kg
+                      <% } %>
+          </p>
+        </div>
       </div>
     </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Custom JavaScript for Chart.js -->
+  <!-- Custom JavaScript for Chart.js -->
+  <script>
+    // Sample static data for testing
 
-    <!-- Chart.js library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
-    <script>
-      // Parse xValues and yValues from server data
-      const xValues = <%= JSON.stringify(progressData.xValues) %>;
-      const yValues = <%= JSON.stringify(progressData.yValues) %>;
+    let xValues = [24, 25, 26, 27, 28, 29, 30];
+    let yValues = [
+      69, 56, 55, 69,
+      66, 55, 79
+    ];
 
-      // Initialize Chart.js
-      const ctx = document.getElementById('myChart').getContext('2d');
-      new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: xValues,
-          datasets: [{
-            label: 'Weight Progress',
-            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1,
-            data: yValues
-          }]
-        },
-        options: {
-          scales: {
-            yAxes: [{
-              ticks: {
-                beginAtZero: false
-              }
-            }]
+
+
+
+    // Initialize Chart.js with static data
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: JSON.parse(JSON.stringify(xValues)),
+        datasets: [{
+          label: 'Weight Progress',
+          data: JSON.parse(JSON.stringify(yValues)),
+          fill: false,
+          borderColor: 'black',
+          tension: 0.1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            min: 40,
+            max: 100
           }
         }
-      });
-    </script>
-  </body>
+      }
+    });
+  </script>
+</body>
+
 </html>

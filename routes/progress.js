@@ -16,7 +16,7 @@ router.post("/", verifyToken, async (req, res) => {
     }
 
     // Calculate progress based on duration
-    const progressData = calculateProgress(user, parseInt(duration));
+    const progressData = calculateProgress(user, duration);
 
     // Render progress page with data
     res.render("progress", { user: req.user, progressData });
@@ -26,26 +26,54 @@ router.post("/", verifyToken, async (req, res) => {
   }
 });
 
-// Function to calculate progress based on user data and duration
 function calculateProgress(user, duration) {
-  const startDate = user.date[0]; // Assuming user.date is an array of dates
-  const endDate = user.date[user.date.length - 1]; // Last date in the array
-  const totalWeightLost = user.weight[0] - user.weight[user.weight.length - 1]; // Example weight lost calculation
+  // Extract dates and weights
+  let dateArray = user.date;
+  let weightArray = user.weight;
 
-  // Filter user weights based on duration
-  const filteredWeights = user.weight.slice(-duration); // Get weights for the last 'duration' days
+  // Combine dates and weights into a single array of objects
+  let dataArray = [];
+  for (let i = 0; i < dateArray.length; i++) {
+    dataArray.push({ date: dateArray[i], weight: weightArray[i] });
+  }
+
+  // Sort the data array by date in descending order
+  dataArray.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  // Calculate total weight change
+  let totalChange =
+    dataArray[0].weight - dataArray[dataArray.length - 1].weight;
+
+  // Determine the number of days to include in the filtered data
+  let numberOfDays = Math.min(Number(duration), dataArray.length);
+
+  // Filter the data for the requested duration
+  let xValues = [];
+  let yValues = [];
+  for (let i = 0; i < numberOfDays; i++) {
+    xValues.push(dataArray[i].date);
+    yValues.push(dataArray[i].weight);
+  }
+
+  // Reverse the arrays to have the earliest dates first
+  xValues.reverse();
+  yValues.reverse();
+
+  // Transform dates to the desired format (MM-DD)
+  xValues = xValues.map((date) => date.toISOString().substring(5, 10));
 
   // Calculate average weight change
-  const averageWeightChange = calculateAverageWeightChange(filteredWeights);
+  const averageWeightChange = calculateAverageWeightChange(yValues);
 
-  const progressData = {
-    startDate,
-    endDate,
-    totalWeightLost,
+  // Return the progress data
+  return {
+    startDate: dateArray[0],
+    endDate: dateArray[dateArray.length - 1],
+    totalWeightLost: totalChange,
     averageWeightChange,
-    // Add more progress metrics as needed
+    xValues,
+    yValues,
   };
-  return progressData;
 }
 
 // Function to calculate average weight change
