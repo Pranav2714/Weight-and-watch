@@ -1,14 +1,15 @@
-const userModel = require("../models/user");
+// routes/authRoutes.js
+const express = require("express");
+const router = express.Router();
+const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const express = require("express");
 
-const router = express.Router();
-
+// Register route
 router.post("/register", async (req, res) => {
   try {
-    let { username, email, password } = req.body;
-    const newUser = new userModel({ username, email, password });
+    const { username, email, password } = req.body;
+    const newUser = new User({ username, email, password });
     await newUser.save();
     res.redirect("/login");
   } catch (err) {
@@ -17,17 +18,18 @@ router.post("/register", async (req, res) => {
   }
 });
 
+// Login route
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
     // Find user by email
-    const user = await userModel.findOne({ email });
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).send("Invalid credentials");
     }
 
-    // Compare password using user-defined method
+    // Compare password
     const isCorrect = await user.isPasswordCorrect(password);
     if (!isCorrect) {
       return res.status(400).send("Invalid credentials");
@@ -36,10 +38,10 @@ router.post("/login", async (req, res) => {
     // Generate JWT token
     const accessToken = user.generateJWT();
 
-    // Set cookie or send token in response
+    // Set cookie and send token in response
     res.cookie("token", accessToken, { httpOnly: true });
 
-    // Redirect or send success response
+    // Redirect to tracking page
     res.redirect("/track");
   } catch (err) {
     console.error(err);
@@ -47,6 +49,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// Logout route
 router.get("/logout", (req, res) => {
   res.clearCookie("token");
   res.redirect("/");
