@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Weight&Watch</title>
+    <!-- Tailwind CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-white-900 text-black">
+    <div class="container mx-auto px-4">
+      <!-- Logout button -->
+      <a class="logoutButton btn btn-light btn-lg" href="/logout" role="button"
+        >Log Out</a
+      >
+      <br /><br /><br /><br />
+
+      <div class="stats mt-8">
+        <!-- Display user information -->
+        <h2 class="text-2xl font-bold statistics">
+          Hello, <%= user.username %>
+        </h2>
+
+        <!-- Progress data -->
+        <div class="mt-4">
+          <h4 class="text-xl font-bold">Progress Data</h4>
+          <ul>
+            <li>Start Date: <%= progressData.startDate %></li>
+            <li>End Date: <%= progressData.endDate %></li>
+            <li>Total Weight Lost: <%= progressData.totalWeightLost %> kg</li>
+            <li>
+              Average Weight Change: <%=
+              progressData.averageWeightChange.toFixed(1) %> kg per day
+            </li>
+            <!-- Add more progress metrics as needed -->
+          </ul>
+        </div>
+
+        <!-- Chart display -->
+        <canvas id="myChart" style="height: 400px; width: 100%"></canvas>
+      </div>
+    </div>
+
+    <!-- Chart.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+    <script>
+      // Parse xValues and yValues from server data
+      const xValues = <%= JSON.stringify(progressData.xValues) %>;
+      const yValues = <%= JSON.stringify(progressData.yValues) %>;
+
+      // Initialize Chart.js
+      const ctx = document.getElementById('myChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: xValues,
+          datasets: [{
+            label: 'Weight Progress',
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1,
+            data: yValues
+          }]
+        },
+        options: {
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: false
+              }
+            }]
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
