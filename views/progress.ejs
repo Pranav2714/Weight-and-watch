@@ -8,13 +8,12 @@
   <!-- Tailwind CSS -->
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet" />
   <!-- Chart.js -->
-
 </head>
 
-<body class="bg-white-900 text-black">
+<body class="bg-gray-900 text-white">
   <div class="container mx-auto px-4">
     <!-- Logout button -->
-    <a class="logoutButton btn btn-light btn-lg" href="/logout" role="button">Log Out</a>
+    <a class="logoutButton btn btn-light btn-lg text-red-500 " href="/logout" role="button">Log Out</a>
     <br /><br /><br /><br />
 
     <div class="stats mt-8">
@@ -38,6 +37,15 @@
                   No data available
                   <% } %>
           </p>
+        </div>
+        <div class="mt-4">
+          <h4 class="text-xl font-bold">Progress Data</h4>
+          <ul>
+            <li>Start Date: <%= progressData.startDate %>
+            </li>
+            <li>End Date: <%= progressData.endDate %>
+            </li>
+          </ul>
         </div>
 
         <!-- Weight change this week -->
@@ -66,15 +74,16 @@
 
         <!-- Total weight change -->
         <div class="mt-4">
-          <h4 class="text-xl font-bold total">Total</h4>
+          <h4 class="text-xl font-bold total">Total </h4>
           <p class="text-lg data">
-            <% let totalChange=(progressData.yValues[progressData.yValues.length - 1] -
-              progressData.yValues[0]).toFixed(1); %>
-              <% if (totalChange> 0) { %>
-                +<%= totalChange %> kg
-                  <% } else { %>
-                    <%= totalChange %> kg
-                      <% } %>
+            <%=progressData.totalChange %>
+              kg
+          </p>
+        </div>
+        <div class="mt-4">
+          <h4 class="text-xl font-bold total">Average Weight Change</h4>
+          <p class="text-lg data">
+            <%=progressData.averageWeightChange %> kg
           </p>
         </div>
       </div>
@@ -82,18 +91,10 @@
   </div>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Custom JavaScript for Chart.js -->
-  <!-- Custom JavaScript for Chart.js -->
   <script>
     // Sample static data for testing
-
-    let xValues = [24, 25, 26, 27, 28, 29, 30];
-    let yValues = [
-      69, 56, 55, 69,
-      66, 55, 79
-    ];
-
-
-
+    let xValues = JSON.parse('<%- progressData.xV %>');
+    let yValues = JSON.parse('<%- progressData.yV %>');
 
     // Initialize Chart.js with static data
     var ctx = document.getElementById('myChart').getContext('2d');
@@ -105,15 +106,30 @@
           label: 'Weight Progress',
           data: JSON.parse(JSON.stringify(yValues)),
           fill: false,
-          borderColor: 'black',
+          borderColor: 'white',
           tension: 0.1
         }]
       },
       options: {
         scales: {
+          x: {
+            ticks: {
+              color: 'white'
+            }
+          },
           y: {
             min: 40,
-            max: 100
+            max: 100,
+            ticks: {
+              color: 'white'
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            labels: {
+              color: 'white'
+            }
           }
         }
       }

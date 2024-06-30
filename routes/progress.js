@@ -64,15 +64,17 @@ function calculateProgress(user, duration) {
 
   // Calculate average weight change
   const averageWeightChange = calculateAverageWeightChange(yValues);
-
+  console.log(totalChange);
   // Return the progress data
   return {
     startDate: dateArray[0],
     endDate: dateArray[dateArray.length - 1],
-    totalWeightLost: totalChange,
+    totalChange,
     averageWeightChange,
     xValues,
     yValues,
+    yV: JSON.stringify(yValues),
+    xV: JSON.stringify(xValues),
   };
 }
 
@@ -82,7 +84,7 @@ function calculateAverageWeightChange(weights) {
 
   const initialWeight = weights[0];
   const finalWeight = weights[weights.length - 1];
-  const weightChange = initialWeight - finalWeight;
+  const weightChange = finalWeight - initialWeight;
 
   return weightChange / (weights.length - 1); // Calculate average change excluding initial weight
 }
