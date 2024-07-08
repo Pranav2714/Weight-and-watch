@@ -5,14 +5,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard - Weight&Watch</title>
-  <!-- Tailwind CSS -->
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet" />
-  <!-- Chart.js -->
 </head>
 
 <body class="bg-gray-900 text-white">
   <div class="container mx-auto px-4">
-    <!-- Logout button -->
+
     <a class="logoutButton btn btn-light btn-lg text-red-500 " href="/logout" role="button">Log Out</a>
     <br /><br /><br /><br />
 
@@ -90,13 +88,13 @@
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Custom JavaScript for Chart.js -->
+  <!-- Js for chart -->
   <script>
-    // Sample static data for testing
+
     let xValues = JSON.parse('<%- progressData.xV %>');
     let yValues = JSON.parse('<%- progressData.yV %>');
 
-    // Initialize Chart.js with static data
+
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
       type: 'line',
