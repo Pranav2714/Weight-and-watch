@@ -1,3 +1,3 @@
 # Weight_Tracker
 
-## Weight tracker web application
+## Weight tracking web application
